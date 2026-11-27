@@ -1,6 +1,6 @@
 import { getDb } from '@/db'
 import { articles, articleEmbeddings } from '@/db/schema'
-import { eq, and } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 
 const EMBEDDING_DIMENSIONS = 1536
 
@@ -67,7 +67,7 @@ function chunkText(text: string, chunkSize: number = 1000, overlap: number = 200
 }
 
 export async function upsertArticleEmbedding(articleId: string): Promise<void> {
-  const db = getDb()
+  const db = getDb()!
   const article = await db.query.articles.findFirst({
     where: eq(articles.id, articleId),
   })
@@ -112,7 +112,7 @@ function cosineSimilarity(vecA: number[], vecB: number[]): number {
 }
 
 export async function findSimilarArticles(query: string, limit: number = 5): Promise<RAGContextItem[]> {
-  const db = getDb()
+  const db = getDb()!
   const queryEmbedding = await embedText(query)
 
   const allEmbeddings = await db.select().from(articleEmbeddings)
@@ -172,7 +172,6 @@ export async function findSimilarArticles(query: string, limit: number = 5): Pro
 }
 
 export async function semanticSearch(query: string, userId: string, limit: number = 5): Promise<RAGContextItem[]> {
-  const db = getDb()
   try {
     const results = await findSimilarArticles(query, limit)
     return results
@@ -183,7 +182,7 @@ export async function semanticSearch(query: string, userId: string, limit: numbe
 }
 
 export async function populateAllEmbeddings(): Promise<{ processed: number; errors: number }> {
-  const db = getDb()
+  const db = getDb()!
   const unsProcessedArticles = await db.query.articles.findMany({
     where: eq(articles.isProcessed, false),
     limit: 100,

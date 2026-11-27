@@ -1,0 +1,45 @@
+{
+  "preprint": {
+    "attention_metric": "cited_by_count (OpenAlex, sampled from latest arXiv listings, zeros included)",
+    "sample_count": 250,
+    "percentiles": {
+      "p10": 0.0,
+      "p50": 0.0,
+      "p90": 2.0,
+      "p99": 15.14,
+      "min": 0,
+      "max": 50,
+      "mean": 0.828,
+      "n": 250
+    }
+  },
+  "community": {
+    "attention_metric": "points (Hacker News via Algolia, date-bucketed random draw across all scores)",
+    "sample_count": 800,
+    "percentiles": {
+      "p10": 1.0,
+      "p50": 2.0,
+      "p90": 39.1,
+      "p99": 237.36,
+      "min": 1,
+      "max": 996,
+      "mean": 17.08,
+      "n": 800
+    }
+  },
+  "blog": {
+    "attention_metric": "unavailable",
+    "sample_count": 262,
+    "percentiles": null
+  },
+  "press": {
+    "attention_metric": "unavailable",
+    "sample_count": 200,
+    "percentiles": null
+  },
+  "mainstream": {
+    "attention_metric": "unavailable",
+    "sample_count": 225,
+    "percentiles": null
+  }
+}

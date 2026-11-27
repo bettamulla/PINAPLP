@@ -1,0 +1,182 @@
+
+> signal@0.1.0 lint
+> next lint
+
+node.exe : 
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ ? The Next.js plugin was not detected in your ESLint configuration. See 
+https://nextjs.org/docs/basic-features/eslint#migrating-existing-config
+
+./src/components/assistant-page.tsx
+4:10  Error: 'formatDate' is defined but never used.  @typescript-eslint/no-unused-vars
+6:26  Error: 'Trash2' is defined but never used.  @typescript-eslint/no-unused-vars
+6:34  Error: 'Edit2' is defined but never used.  @typescript-eslint/no-unused-vars
+7:43  Error: 'RefreshCw' is defined but never used.  @typescript-eslint/no-unused-vars
+8:33  Error: 'Check' is defined but never used.  @typescript-eslint/no-unused-vars
+9:19  Error: 'Lightbulb' is defined but never used.  @typescript-eslint/no-unused-vars
+12:10  Error: 'Card' is defined but never used.  @typescript-eslint/no-unused-vars
+12:16  Error: 'CardContent' is defined but never used.  @typescript-eslint/no-unused-vars
+12:29  Error: 'CardHeader' is defined but never used.  @typescript-eslint/no-unused-vars
+12:41  Error: 'CardTitle' is defined but never used.  @typescript-eslint/no-unused-vars
+17:10  Error: 'Separator' is defined but never used.  @typescript-eslint/no-unused-vars
+19:60  Error: 'DialogTrigger' is defined but never used.  @typescript-eslint/no-unused-vars
+21:34  Error: 'AvatarImage' is defined but never used.  @typescript-eslint/no-unused-vars
+23:10  Error: 'Tabs' is defined but never used.  @typescript-eslint/no-unused-vars
+23:16  Error: 'TabsList' is defined but never used.  @typescript-eslint/no-unused-vars
+23:26  Error: 'TabsTrigger' is defined but never used.  @typescript-eslint/no-unused-vars
+23:39  Error: 'TabsContent' is defined but never used.  @typescript-eslint/no-unused-vars
+437:16  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+437:45  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+437:49  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+437:75  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+444:35  Error: 'index' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/briefing-section.tsx
+9:10  Error: 'ScrollArea' is defined but never used.  @typescript-eslint/no-unused-vars
+11:39  Error: 'TabsContent' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/briefings-page.tsx
+11:10  Error: 'DropdownMenu' is defined but never used.  @typescript-eslint/no-unused-vars
+11:24  Error: 'DropdownMenuContent' is defined but never used.  @typescript-eslint/no-unused-vars
+11:45  Error: 'DropdownMenuItem' is defined but never used.  @typescript-eslint/no-unused-vars
+11:63  Error: 'DropdownMenuTrigger' is defined but never used.  @typescript-eslint/no-unused-vars
+11:84  Error: 'DropdownMenuSeparator' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/dashboard.tsx
+4:10  Error: 'NavigationMenu' is defined but never used.  @typescript-eslint/no-unused-vars
+4:26  Error: 'NavigationMenuItem' is defined but never used.  @typescript-eslint/no-unused-vars
+4:46  Error: 'NavigationMenuLink' is defined but never used.  @typescript-eslint/no-unused-vars
+4:66  Error: 'NavigationMenuList' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/header.tsx
+8:10  Error: 'ThemeProvider' is defined but never used.  @typescript-eslint/no-unused-vars
+11:11  Error: 'theme' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/knowledge-page.tsx
+7:3  Error: 'ArrowLeft' is defined but never used.  @typescript-eslint/no-unused-vars
+7:14  Error: 'ArrowRight' is defined but never used.  @typescript-eslint/no-unused-vars
+7:33  Error: 'X' is defined but never used.  @typescript-eslint/no-unused-vars
+7:36  Error: 'Minus' is defined but never used.  @typescript-eslint/no-unused-vars
+7:43  Error: 'Plus' is defined but never used.  @typescript-eslint/no-unused-vars
+8:20  Error: 'Calendar' is defined but never used.  @typescript-eslint/no-unused-vars
+9:3  Error: 'Filter' is defined but never used.  @typescript-eslint/no-unused-vars
+9:11  Error: 'Settings' is defined but never used.  @typescript-eslint/no-unused-vars
+9:26  Error: 'Archive' is defined but never used.  @typescript-eslint/no-unused-vars
+9:40  Error: 'EyeOff' is defined but never used.  @typescript-eslint/no-unused-vars
+10:3  Error: 'ChevronDown' is defined but never used.  @typescript-eslint/no-unused-vars
+10:16  Error: 'ChevronUp' is defined but never used.  @typescript-eslint/no-unused-vars
+13:52  Error: 'CardDescription' is defined but never used.  @typescript-eslint/no-unused-vars
+17:10  Error: 'ScrollArea' is defined but never used.  @typescript-eslint/no-unused-vars
+18:10  Error: 'Separator' is defined but never used.  @typescript-eslint/no-unused-vars
+22:60  Error: 'DialogTrigger' is defined but never used.  @typescript-eslint/no-unused-vars
+23:10  Error: 'DropdownMenu' is defined but never used.  @typescript-eslint/no-unused-vars
+23:24  Error: 'DropdownMenuContent' is defined but never used.  @typescript-eslint/no-unused-vars
+23:45  Error: 'DropdownMenuItem' is defined but never used.  @typescript-eslint/no-unused-vars
+23:63  Error: 'DropdownMenuTrigger' is defined but never used.  @typescript-eslint/no-unused-vars
+23:84  Error: 'DropdownMenuSeparator' is defined but never used.  @typescript-eslint/no-unused-vars
+23:107  Error: 'DropdownMenuLabel' is defined but never used.  @typescript-eslint/no-unused-vars
+24:10  Error: 'Popover' is defined but never used.  @typescript-eslint/no-unused-vars
+24:19  Error: 'PopoverTrigger' is defined but never used.  @typescript-eslint/no-unused-vars
+24:35  Error: 'PopoverContent' is defined but never used.  @typescript-eslint/no-unused-vars
+25:10  Error: 'Tooltip' is defined but never used.  @typescript-eslint/no-unused-vars
+25:19  Error: 'TooltipProvider' is defined but never used.  @typescript-eslint/no-unused-vars
+25:36  Error: 'TooltipTrigger' is defined but never used.  @typescript-eslint/no-unused-vars
+25:52  Error: 'TooltipContent' is defined but never used.  @typescript-eslint/no-unused-vars
+26:10  Error: 'Skeleton' is defined but never used.  @typescript-eslint/no-unused-vars
+250:81  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+559:44  Error: 'i' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/perspectives-page.tsx
+5:55  Error: 'ChevronLeft' is defined but never used.  @typescript-eslint/no-unused-vars
+5:68  Error: 'ChevronRight' is defined but never used.  @typescript-eslint/no-unused-vars
+10:39  Error: 'TabsContent' is defined but never used.  @typescript-eslint/no-unused-vars
+11:10  Error: 'ScrollArea' is defined but never used.  @typescript-eslint/no-unused-vars
+303:51  Error: 'i' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/predictions-page.tsx
+4:22  Error: 'formatRelative' is defined but never used.  @typescript-eslint/no-unused-vars
+8:14  Error: 'RefreshCw' is defined but never used.  @typescript-eslint/no-unused-vars
+8:25  Error: 'Filter' is defined but never used.  @typescript-eslint/no-unused-vars
+8:33  Error: 'ChevronLeft' is defined but never used.  @typescript-eslint/no-unused-vars
+8:46  Error: 'ChevronRight' is defined but never used.  @typescript-eslint/no-unused-vars
+9:3  Error: 'Settings' is defined but never used.  @typescript-eslint/no-unused-vars
+9:31  Error: 'Trash2' is defined but never used.  @typescript-eslint/no-unused-vars
+18:10  Error: 'ScrollArea' is defined but never used.  @typescript-eslint/no-unused-vars
+19:10  Error: 'Separator' is defined but never used.  @typescript-eslint/no-unused-vars
+24:10  Error: 'DropdownMenu' is defined but never used.  @typescript-eslint/no-unused-vars
+24:24  Error: 'DropdownMenuContent' is defined but never used.  @typescript-eslint/no-unused-vars
+24:45  Error: 'DropdownMenuItem' is defined but never used.  @typescript-eslint/no-unused-vars
+24:63  Error: 'DropdownMenuTrigger' is defined but never used.  @typescript-eslint/no-unused-vars
+24:84  Error: 'DropdownMenuSeparator' is defined but never used.  @typescript-eslint/no-unused-vars
+25:10  Error: 'Popover' is defined but never used.  @typescript-eslint/no-unused-vars
+25:19  Error: 'PopoverTrigger' is defined but never used.  @typescript-eslint/no-unused-vars
+25:35  Error: 'PopoverContent' is defined but never used.  @typescript-eslint/no-unused-vars
+144:24  Error: 'setFilterStatus' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+147:10  Error: 'isEditOpen' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/settings-page.tsx
+4:10  Error: 'formatDate' is defined but never used.  @typescript-eslint/no-unused-vars
+8:9  Error: 'Loader2' is defined but never used.  @typescript-eslint/no-unused-vars
+8:38  Error: 'Info' is defined but never used.  @typescript-eslint/no-unused-vars
+9:3  Error: 'ChevronDown' is defined but never used.  @typescript-eslint/no-unused-vars
+9:16  Error: 'ChevronUp' is defined but never used.  @typescript-eslint/no-unused-vars
+17:10  Error: 'Textarea' is defined but never used.  @typescript-eslint/no-unused-vars
+24:10  Error: 'DropdownMenu' is defined but never used.  @typescript-eslint/no-unused-vars
+24:24  Error: 'DropdownMenuContent' is defined but never used.  @typescript-eslint/no-unused-vars
+24:45  Error: 'DropdownMenuItem' is defined but never used.  @typescript-eslint/no-unused-vars
+24:63  Error: 'DropdownMenuTrigger' is defined but never used.  @typescript-eslint/no-unused-vars
+24:84  Error: 'DropdownMenuSeparator' is defined but never used.  @typescript-eslint/no-unused-vars
+25:60  Error: 'DialogTrigger' is defined but never used.  @typescript-eslint/no-unused-vars
+26:10  Error: 'Tooltip' is defined but never used.  @typescript-eslint/no-unused-vars
+26:19  Error: 'TooltipProvider' is defined but never used.  @typescript-eslint/no-unused-vars
+26:36  Error: 'TooltipTrigger' is defined but never used.  @typescript-eslint/no-unused-vars
+26:52  Error: 'TooltipContent' is defined but never used.  @typescript-eslint/no-unused-vars
+27:34  Error: 'AvatarImage' is defined but never used.  @typescript-eslint/no-unused-vars
+176:124  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+187:126  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+422:124  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+600:62  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+600:74  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+690:98  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+730:19  Error: Unexpected constant condition.  no-constant-condition
+756:19  Error: Unexpected constant condition.  no-constant-condition
+811:54  Error: 'v' is defined but never used.  @typescript-eslint/no-unused-vars
+1042:65  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+1108:25  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+1108:32  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+
+./src/components/side-panel.tsx
+4:10  Error: 'formatRelativeTime' is defined but never used.  @typescript-eslint/no-unused-vars
+13:3  Error: 'Check' is defined but never used.  @typescript-eslint/no-unused-vars
+14:3  Error: 'X' is defined but never used.  @typescript-eslint/no-unused-vars
+20:10  Error: 'ScrollArea' is defined but never used.  @typescript-eslint/no-unused-vars
+21:10  Error: 'Separator' is defined but never used.  @typescript-eslint/no-unused-vars
+23:10  Error: 'Tabs' is defined but never used.  @typescript-eslint/no-unused-vars
+23:16  Error: 'TabsList' is defined but never used.  @typescript-eslint/no-unused-vars
+23:26  Error: 'TabsTrigger' is defined but never used.  @typescript-eslint/no-unused-vars
+23:39  Error: 'TabsContent' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/storylines-page.tsx
+4:10  Error: 'formatDate' is defined but never used.  @typescript-eslint/no-unused-vars
+10:45  Error: 'DropdownMenuItem' is defined but never used.  @typescript-eslint/no-unused-vars
+11:10  Error: 'ScrollArea' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/ui/navigation-menu.tsx
+3:20  Error: 'VariantProps' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/db/schema.ts
+13:3  Error: 'foreignKey' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/lib/embeddings.ts
+3:14  Error: 'and' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/lib/news-ingestion.ts
+154:61  Error: Unnecessary escape character: \/.  no-useless-escape
+
+info  - Need to disable some ESLint rules? Learn more here: 
+https://nextjs.org/docs/basic-features/eslint#disabling-rules

@@ -63,7 +63,7 @@ export function markdownToReact(content: string) {
       elements.push(<br key={i} />)
     } else {
       // Handle inline formatting
-      let processedLine = line
+      const processedLine = line
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/\*(.*?)\*/g, '<em>$1</em>')
         .replace(/`(.*?)`/g, '<code className="bg-muted px-1 rounded">$1</code>')

@@ -5,7 +5,7 @@ import { generateFlashcards } from '@/lib/ai'
 import { reviewCard, getCardState, createNewCard } from '@/lib/spaced-repetition'
 
 export async function generateFlashcardsFromArticle(articleId: string) {
-  const db = getDb()
+  const db = getDb()!
   const userId = OWNER_USER_ID
   if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
 
@@ -59,7 +59,7 @@ export async function generateFlashcardsFromArticle(articleId: string) {
 }
 
 export async function getDueCards(limit = 50) {
-  const db = getDb()
+  const db = getDb()!
   const userId = OWNER_USER_ID
   if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
 
@@ -88,7 +88,7 @@ export async function reviewFlashcard(
   rating: 1 | 2 | 3 | 4,
   reviewDurationMs?: number
 ) {
-  const db = getDb()
+  const db = getDb()!
   const userId = OWNER_USER_ID
   if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
 
@@ -129,7 +129,7 @@ export async function reviewFlashcard(
 }
 
 export async function getReviewStats(userId: string, days = 30) {
-  const db = getDb()
+  const db = getDb()!
   const now = new Date()
   const since = new Date(now.getTime() - days * 24 * 60 * 60 * 1000)
 
@@ -190,7 +190,7 @@ export async function getReviewStats(userId: string, days = 30) {
 }
 
 export async function getRecentReviews(limit = 20) {
-  const db = getDb()
+  const db = getDb()!
   const userId = OWNER_USER_ID
   if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
 

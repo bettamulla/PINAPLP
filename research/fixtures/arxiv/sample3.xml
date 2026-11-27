@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/WFquG1CEVlfg5AL6NF3pd5hfYDo</id>
+  <title>arXiv Query: search_query=cat:cs.CV&amp;id_list=&amp;start=0&amp;max_results=2</title>
+  <updated>2026-11-27T02:40:12Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=cat:cs.CV&amp;start=0&amp;max_results=2&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>2</opensearch:itemsPerPage>
+  <opensearch:totalResults>215589</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2611.34944v1</id>
+    <title>AnyCam: Anything Can Represent Camera for Video Generation</title>
+    <updated>2026-11-25T18:59:59Z</updated>
+    <link href="https://arxiv.org/abs/2611.34944v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2611.34944v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Camera-controlled video generation re-renders a video along a target camera trajectory, yet moving the camera around an object, the most natural way to change the viewpoint of an object-centric scene, remains difficult. Existing methods condition either on camera parameters, which are scale-ambiguous in monocular video, or on explicit geometry such as warped point clouds or depth, which breaks down under large viewpoint changes. We present AnyCam, a method that represents the camera with an anchor object in the scene: we reconstruct it in 3D and render it along the target trajectory, a camera signal that is scale-aware, view-complete and easy to specify relative to the object. A video diffusion model transfers the content and dynamics of the source video to the new viewpoint. Its H-Concat layout aligns source and target frames in time, so the model can be distilled into AnyCam-AR, a streaming few-step generator for on-the-fly camera control. Both models are trained on paired videos with pixel-aligned anchor renderings from multi-camera videos and static-scene captures. Experiments on diverse datasets and trajectories show that AnyCam performs favorably against camera-controlled video generation and 3D reconstruction methods in camera control and visual quality.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-11-25T18:59:59Z</published>
+    <arxiv:comment>Project page: https://weijielyu.github.io/AnyCam/</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Weijie Lyu</name>
+    </author>
+    <author>
+      <name>Zhixin Shu</name>
+    </author>
+    <author>
+      <name>Yuntian Ke</name>
+    </author>
+    <author>
+      <name>Ming-Hsuan Yang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2611.34943v1</id>
+    <title>Tracking Any Point with Agentic Visual Reasoning</title>
+    <updated>2026-11-25T18:59:58Z</updated>
+    <link href="https://arxiv.org/abs/2611.34943v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2611.34943v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>A general-purpose Vision-Language Model (VLM) has surpassed expert vision models in many domains such as object detection and video recognition. However, point correspondence is known to be challenging for VLMs since it goes beyond object-level recognition: it requires pixel-level localization of the same physical surface point across observations, even when appearance changes or the point disappears and later reappears. In this paper, we introduce AgenTAP, a VLM-based agent that directly predicts point coordinates and visibility and actively reasons over videos. Starting from its own estimate, the agent autonomously chooses what to inspect and uses the resulting evidence to verify point identity and refine its predictions. With GPT-6 Astra, it surpasses expert vision models in both point localization and visibility prediction, without correspondence-specific fine-tuning. We further use AgenTAP to re-identify physical points after disappearance and reconnect fragmented tracks, constructing EgoTAP-4D, a dataset of 3D point trajectories in long real-world egocentric videos. On sampled reappearing points, its predictions approach human agreement, and adding EgoTAP-4D to D4RT training improves average 3D tracking performance.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-11-25T18:59:58Z</published>
+    <arxiv:comment>Project page: https://agentap.cs.virginia.edu</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Xuweiyi Chen</name>
+    </author>
+    <author>
+      <name>Jin Yao</name>
+    </author>
+    <author>
+      <name>Linzhan Mou</name>
+    </author>
+    <author>
+      <name>Lei Gong</name>
+    </author>
+    <author>
+      <name>Di Liu</name>
+    </author>
+    <author>
+      <name>Cheng Zhang</name>
+    </author>
+    <author>
+      <name>Ziqiao Ma</name>
+    </author>
+    <author>
+      <name>Sihan Xu</name>
+    </author>
+    <author>
+      <name>Adam W. Harley</name>
+    </author>
+    <author>
+      <name>Shengyi Qian</name>
+    </author>
+    <author>
+      <name>Zezhou Cheng</name>
+    </author>
+  </entry>
+</feed>

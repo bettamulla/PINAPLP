@@ -434,7 +434,7 @@ function WelcomeScreen({ onQuickPrompt }: { onQuickPrompt: (prompt: string) => v
 
       <div className="pt-3 sm:pt-4 border-t px-4 sm:px-0">
         <p className="text-xs sm:text-sm text-muted-foreground">
-          Try: "What were the top 3 stories?" • "Analyze my Fed prediction"
+          Try: &#34;What were the top 3 stories?&#34; • &#34;Analyze my Fed prediction&#34;
         </p>
       </div>
     </div>

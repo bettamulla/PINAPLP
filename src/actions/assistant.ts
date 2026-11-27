@@ -15,7 +15,7 @@ export interface RAGResult {
 export async function createConversation(_title?: string) {
   if (OWNER_USER_ID !== 'owner-12345') throw new Error('Unauthorized')
 
-  const db = getDb()
+  const db = getDb()!
   const newConversation = await db.insert(conversations).values({
     title: _title || 'New Conversation',
     userId: OWNER_USER_ID,
@@ -26,7 +26,7 @@ export async function createConversation(_title?: string) {
 export async function addMessage(conversationId: string, content: string, role: 'user' | 'assistant') {
   if (OWNER_USER_ID !== 'owner-12345') throw new Error('Unauthorized')
 
-  const db = getDb()
+  const db = getDb()!
   await db.insert(aiMessages).values({
     conversationId,
     content,
@@ -37,7 +37,7 @@ export async function addMessage(conversationId: string, content: string, role: 
 export async function getConversationMessages(conversationId: string) {
   if (OWNER_USER_ID !== 'owner-12345') throw new Error('Unauthorized')
 
-  const db = getDb()
+  const db = getDb()!
   return await db.query.aiMessages.findMany({
     where: eq(aiMessages.conversationId, conversationId),
     orderBy: (messages) => [asc(messages.createdAt)],
@@ -47,7 +47,6 @@ export async function getConversationMessages(conversationId: string) {
 export async function askQuestion(conversationId: string, question: string) {
   if (OWNER_USER_ID !== 'owner-12345') throw new Error('Unauthorized')
 
-  const db = getDb()
   const messages = await getConversationMessages(conversationId)
   const context = {
     savedArticles: [] as string[],
@@ -64,7 +63,6 @@ export async function askQuestion(conversationId: string, question: string) {
 export async function searchKnowledge(_query: string) {
   if (OWNER_USER_ID !== 'owner-12345') throw new Error('Unauthorized')
 
-  const db = getDb()
   const results = await semanticSearch(_query || '', OWNER_USER_ID, 5)
   return results
 }

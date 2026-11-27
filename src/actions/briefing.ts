@@ -10,7 +10,7 @@ export async function createBriefing(data: {
   newsSourceId: string
   articleIds: string[]
 }) {
-  const db = getDb()
+  const db = getDb()!
   const userId = OWNER_USER_ID
   if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
 
@@ -58,7 +58,7 @@ export async function updateBriefingStories(briefingId: string, articleUpdates: 
   whyItMatters: string
   whatHappensNext: string
 }[]) {
-  const db = getDb()
+  const db = getDb()!
   const userId = OWNER_USER_ID
   if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
 
@@ -98,7 +98,7 @@ export async function updateBriefingStories(briefingId: string, articleUpdates: 
 }
 
 export async function deleteBriefingStory(briefingId: string, articleId: string) {
-  const db = getDb()
+  const db = getDb()!
   const userId = OWNER_USER_ID
   if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
 
@@ -118,7 +118,7 @@ export async function deleteBriefingStory(briefingId: string, articleId: string)
 }
 
 export async function getBriefing(briefingId: string) {
-  const db = getDb()
+  const db = getDb()!
   const userId = OWNER_USER_ID
   if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
 
@@ -138,7 +138,7 @@ export async function getBriefing(briefingId: string) {
 }
 
 export async function getUserBriefings() {
-  const db = getDb()
+  const db = getDb()!
   const userId = OWNER_USER_ID
   if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
 
@@ -157,7 +157,7 @@ export async function getUserBriefings() {
 }
 
 export async function getBriefingStories(briefingId: string) {
-  const db = getDb()
+  const db = getDb()!
   const userId = OWNER_USER_ID
   if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
 
