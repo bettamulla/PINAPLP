@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+
+# Next.js build output
+.next/
+/out/
+
+# Environment variables
+.env.local
+.env.*.local
+
+# Docker
+.dockerignore
+
+# Packages
+.pnpm-store/
+
+# TypeScript
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# IDE
+.vscode/
+*.code-workspace
+
+# Logs
+logs/
+*.log
+
+# Middleman bursts
+.site/
+
+# Turborepo
+turbo.yaml
+
+# Bun
+.bun/
+
+# Federalist
+.federalist/
+
+# DSH
+.dsh/
