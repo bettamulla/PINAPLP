@@ -2,13 +2,13 @@
 
 import * as React from 'react'
 import { formatDate } from '@/lib/utils'
-import { Search, Columns, Brain, FileText, RefreshCw, ChevronLeft, ChevronRight, Plus, Check, X, ChevronDown, ChevronUp } from 'lucide-react'
+import { Search, Columns, Brain, FileText, RefreshCw, Plus, Check, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import { Separator } from '@/components/ui/separator'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 
@@ -300,7 +300,7 @@ function PerspectiveListItem({ perspective, isSelected, onClick }: { perspective
         </Badge>
       </div>
       <div className="flex items-center gap-0.5 mt-1.5 sm:mt-2">
-        {perspective.articles.slice(0, 2).map((a, i) => (
+        {perspective.articles.slice(0, 2).map((a) => (
           <Badge key={a.id} variant="outline" className="text-[8px] sm:text-xs">{a.source.name}</Badge>
         ))}
         {perspective.articles.length > 2 && (

@@ -5,10 +5,10 @@ import { formatDate } from '@/lib/utils'
 import { Sun, Moon, Monitor, Bell, Search, User, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
-import { ThemeProvider, useTheme } from 'next-themes'
+import { useTheme } from 'next-themes';
 
 function ThemeToggle() {
-  const { theme, setTheme } = useTheme()
+  const { setTheme } = useTheme()
 
   return (
     <DropdownMenu>

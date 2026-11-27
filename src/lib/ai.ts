@@ -2,9 +2,13 @@ import Anthropic from '@anthropic-ai/sdk'
 import { z } from 'zod'
 import { zodToJsonSchema } from 'zod-to-json-schema'
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-})
+function getAnthropicClient() {
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  if (!apiKey) {
+    throw new Error('ANTHROPIC_API_KEY must be set to use AI features')
+  }
+  return new Anthropic({ apiKey })
+}
 
 // Schemas for structured outputs
 export const ArticleAnalysisSchema = z.object({
@@ -78,7 +82,7 @@ async function callClaude<T>(
     type: 'object',
   } as { type: 'object'; properties?: Record<string, unknown>; required?: string[]; [k: string]: unknown }
 
-  const response = await anthropic.messages.create({
+  const response = await getAnthropicClient().messages.create({
     model,
     max_tokens: maxTokens,
     temperature,
@@ -224,7 +228,7 @@ ${semanticContext}
 
 Provide a helpful, well-cited response that references both the user's personal context and semantically relevant articles.`
 
-  const response = await anthropic.messages.create({
+  const response = await getAnthropicClient().messages.create({
     model: 'claude-3-5-sonnet-20241022',
     max_tokens: 4000,
     temperature: 0.4,

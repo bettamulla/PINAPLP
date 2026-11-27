@@ -1,30 +1,23 @@
 'use client'
 
 import * as React from 'react'
-import { formatDate } from '@/lib/utils'
-import {
-  User, Bell, Moon, Sun, Monitor, Globe, Palette,
-  Clock, BookOpen, Target, Brain, Zap, Shield,
-  Save, Loader2, Check, AlertCircle, Info,
-  ChevronDown, ChevronUp, Key, Database, Wifi,
-  Mail, Smartphone, Layers, Tag, Download, FileText,
-  RotateCcw
-} from 'lucide-react'
+
+import { User, Bell, Moon, Sun, Monitor, Globe, Palette, Clock, BookOpen, Target, Brain, Zap, Shield, Save, Check, AlertCircle, Key, Database, Wifi, Mail, Smartphone, Layers, Tag, Download, FileText, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
+
 import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from '@/components/ui/dialog'
-import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
+
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast'
 
 const topics = [
@@ -173,7 +166,7 @@ function GeneralSettings({ preferences, onChange }: { preferences: typeof mockPr
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label>Response Length</Label>
-            <Select value={preferences.briefingLength} onValueChange={v => onChange({ ...preferences, briefingLength: v as any })}>
+            <Select value={preferences.briefingLength} onValueChange={v => onChange({ ...preferences, briefingLength: v })}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="short">Concise (2-3 sentences)</SelectItem>
@@ -184,7 +177,7 @@ function GeneralSettings({ preferences, onChange }: { preferences: typeof mockPr
           </div>
           <div className="space-y-2">
             <Label>Analytical Depth</Label>
-            <Select value={preferences.analyticalDepth} onValueChange={v => onChange({ ...preferences, analyticalDepth: v as any })}>
+            <Select value={preferences.analyticalDepth} onValueChange={v => onChange({ ...preferences, analyticalDepth: v })}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="summary">Summary only</SelectItem>
@@ -419,7 +412,7 @@ function ScheduleSettings({ preferences, onChange }: { preferences: typeof mockP
           </div>
           <div className="space-y-2">
             <Label>Briefing Length</Label>
-            <Select value={preferences.briefingLength} onValueChange={v => onChange({ ...preferences, briefingLength: v as any })}>
+            <Select value={preferences.briefingLength} onValueChange={v => onChange({ ...preferences, briefingLength: v })}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="short">Short (~5 min read, 3 stories)</SelectItem>
@@ -597,7 +590,7 @@ function NotificationSettings({ preferences, onChange }: { preferences: typeof m
             </div>
             <Switch checked={preferences.pushNotifications} onCheckedChange={v => onChange({ ...preferences, pushNotifications: v })} />
           </div>
-          <p className="text-sm text-muted-foreground">Click "Enable Push" in the header menu to grant browser permission.</p>
+              <p className="text-sm text-muted-foreground">Click &quot;Enable Push&quot; in the header menu to grant browser permission.</p>
           <Separator />
           <div className="space-y-3">
             {[
@@ -687,7 +680,7 @@ function AppearanceSettings({ preferences, onChange }: { preferences: typeof moc
             ].map(t => (
               <button
                 key={t.value}
-                onClick={() => { setTheme(t.value); onChange({ ...preferences, theme: t.value as any }) }}
+                onClick={() => { setTheme(t.value); onChange({ ...preferences, theme: t.value }) }}
                 className={`p-4 rounded-lg border-2 transition-all text-left ${
                   theme === t.value
                     ? 'border-primary bg-primary/5'
@@ -727,9 +720,7 @@ function AppearanceSettings({ preferences, onChange }: { preferences: typeof moc
               <button
                 key={l.value}
                 className={`p-4 rounded-lg border-2 transition-all text-left ${
-                  false // TODO: track selected layout
-                    ? 'border-primary bg-primary/5'
-                    : 'border-border hover:border-primary/50'
+                  'border-border hover:border-primary/50'
                 }`}
               >
                 <div>
@@ -753,9 +744,7 @@ function AppearanceSettings({ preferences, onChange }: { preferences: typeof moc
               <button
                 key={color}
                 className={`w-10 h-10 rounded-full border-2 transition-transform ${
-                  false // TODO: track selected color
-                    ? 'scale-110 border-white dark:border-gray-900 shadow-lg'
-                    : 'hover:scale-105'
+                  'hover:scale-105'
                 }`}
                 style={{ backgroundColor: color }}
               />
@@ -808,7 +797,7 @@ function AppearanceSettings({ preferences, onChange }: { preferences: typeof moc
           <div className="space-y-2">
             <Label>Base Font Size</Label>
             <div className="flex items-center gap-3">
-              <Slider value={[100]} onValueChange={([v]) => {}} min={85} max={125} step={5} className="flex-1" />
+              <Slider value={[100]} onValueChange={() => {}} min={85} max={125} step={5} className="flex-1" />
               <span className="font-mono text-lg w-16 text-right">100%</span>
             </div>
           </div>
@@ -1039,7 +1028,7 @@ function AccountSettings({ showDeleteDialog }: { showDeleteDialog: (v: boolean) 
             <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
               <div>
                 <p className="font-medium">AI Training Opt-out</p>
-                <p className="text-sm text-muted-foreground">Don't use my data for model training</p>
+              <p className="text-sm text-muted-foreground">Don&apos;t use my data for model training</p>
               </div>
               <Switch checked={true} onCheckedChange={() => {}} />
             </div>
@@ -1105,7 +1094,7 @@ function DeleteAccountDialog({ onClose }: { onClose: () => void }) {
             </ul>
           </div>
           <div className="space-y-2">
-            <Label>Type "DELETE" to confirm</Label>
+            <Label>Type &quot;DELETE&quot; to confirm</Label>
             <Input
               value={confirmText}
               onChange={(e) => setConfirmText(e.target.value)}

@@ -1,8 +1,10 @@
 import { getDb } from '@/db'
 import { flashcards, reviewHistory, users, articles, briefingStories } from '@/db/schema'
-import { eq, and, lte } from 'drizzle-orm'
+import { eq, and, count, gte, lte } from 'drizzle-orm'
 import { generateFlashcards } from '@/lib/ai'
-import { reviewCard, getCardState, createNewCard } from '@/lib/spaced-repetition'
+import { reviewCard, getCardState, createNewCard, getRetrievability } from '@/lib/spaced-repetition'
+
+const OWNER_USER_ID = 'owner-12345'
 
 export async function generateFlashcardsFromArticle(articleId: string) {
   const db = getDb()!
@@ -104,28 +106,41 @@ export async function reviewFlashcard(
   if (card.userId !== userId) throw new Error('Forbidden')
 
   const cardState = getCardState({
+    dueDate: card.dueDate,
     stability: Number(card.stability),
-    retrievability: Number(card.retrievability),
+    difficulty: Number(card.difficulty),
+    lastReviewedAt: card.lastReviewedAt,
+    reviewCount: card.reviewCount ?? 0,
+    lapseCount: card.lapseCount ?? 0,
   })
 
-  const newState = reviewCard(cardState, rating, reviewDurationMs)
+  const newState = reviewCard(cardState, rating, new Date())
+  const newCardState = newState.card
+  const difficultyLabels = ['again', 'hard', 'good', 'easy'] as const
 
   await db.update(flashcards).set({
-    stability: newState.stability.toString(),
-    retrievability: newState.retrievability.toString(),
-    lastReviewedAt: new Date(),
-    difficulty: newState.difficulty.toString(),
+    stability: newCardState.stability.toString(),
+    retrievability: getRetrievability(newCardState).toString(),
+    dueDate: newCardState.due,
+    lastReviewedAt: newCardState.lastReview,
+    reviewCount: newCardState.reps,
+    lapseCount: newCardState.lapses,
+    difficulty: newCardState.difficulty.toString(),
   }).where(eq(flashcards.id, flashcardId))
 
   await db.insert(reviewHistory).values({
     flashcardId,
     userId,
-    rating,
+    difficulty: difficultyLabels[rating - 1],
+    previousStability: cardState.stability.toString(),
+    newStability: newCardState.stability.toString(),
+    previousDifficulty: cardState.difficulty.toString(),
+    newDifficulty: newCardState.difficulty.toString(),
     reviewedAt: new Date(),
-    durationMs: reviewDurationMs,
+    reviewDurationMs,
   })
 
-  return { success: true, ...newState }
+  return { success: true, ...newState, retrievability: getRetrievability(newCardState) }
 }
 
 export async function getReviewStats(userId: string, days = 30) {
@@ -133,9 +148,8 @@ export async function getReviewStats(userId: string, days = 30) {
   const now = new Date()
   const since = new Date(now.getTime() - days * 24 * 60 * 60 * 1000)
 
-  const total = await db.query.flashcards.count({
-    where: eq(flashcards.userId, userId),
-  })
+  const [{ total }] = await db.select({ total: count() }).from(flashcards)
+    .where(eq(flashcards.userId, userId))
 
   const reviews = await db.query.reviewHistory.findMany({
     where: and(
@@ -145,37 +159,31 @@ export async function getReviewStats(userId: string, days = 30) {
     orderBy: (r, { desc }) => [desc(r.reviewedAt)],
   })
 
-  const completed = reviews.filter(r => r.rating >= 3).length
-  const failed = reviews.filter(r => r.rating < 3).length
+  const completed = reviews.filter((review) => review.difficulty === 'good' || review.difficulty === 'easy').length
+  const failed = reviews.filter((review) => review.difficulty === 'again' || review.difficulty === 'hard').length
 
   let avgDifficulty = 0
   let avgStability = 0
   let avgRetrievability = 0
 
   if (reviews.length > 0) {
-    avgDifficulty = reviews.reduce((sum, r) => {
+    let cardsFound = 0
+    for (const review of reviews) {
       const card = await db.query.flashcards.findFirst({
-        where: eq(flashcards.id, r.flashcardId),
+        where: eq(flashcards.id, review.flashcardId),
       })
-      if (card) return sum + Number(card.difficulty)
-      return sum
-    }, 0) / reviews.length
+      if (!card) continue
+      cardsFound += 1
+      avgDifficulty += Number(card.difficulty)
+      avgStability += Number(card.stability)
+      avgRetrievability += Number(card.retrievability)
+    }
 
-    avgStability = reviews.reduce((sum, r) => {
-      const card = await db.query.flashcards.findFirst({
-        where: eq(flashcards.id, r.flashcardId),
-      })
-      if (card) return sum + Number(card.stability)
-      return sum
-    }, 0) / reviews.length
-
-    avgRetrievability = reviews.reduce((sum, r) => {
-      const card = await db.query.flashcards.findFirst({
-        where: eq(flashcards.id, r.flashcardId),
-      })
-      if (card) return sum + Number(card.retrievability)
-      return sum
-    }, 0) / reviews.length
+    if (cardsFound > 0) {
+      avgDifficulty /= cardsFound
+      avgStability /= cardsFound
+      avgRetrievability /= cardsFound
+    }
   }
 
   return {
@@ -207,10 +215,4 @@ export async function getRecentReviews(limit = 20) {
   })
 
   return reviews
-}
-
-function getOptimalRetention(card: { stability: number; scheduledDays: number }): number {
-  const FACTOR = 0.9 ** (1 / -0.5) - 1
-  const DECAY = -0.5
-  return (1 + FACTOR * card.scheduledDays / card.stability) ** DECAY
 }

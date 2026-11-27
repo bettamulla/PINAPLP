@@ -1,13 +1,8 @@
 'use client'
 
 import * as React from 'react'
-import { formatDate, formatRelative } from '@/lib/utils'
-import {
-  Plus, Target, TrendingUp, TrendingDown,
-  Brain, Clock, CheckCircle, XCircle, HelpCircle,
-  BarChart2, RefreshCw, Filter, ChevronLeft, ChevronRight,
-  Settings, Zap, Flag, Edit2, Trash2, Calendar
-} from 'lucide-react'
+import { formatDate } from '@/lib/utils';
+import { Plus, Target, TrendingUp, TrendingDown, Brain, Clock, CheckCircle, XCircle, HelpCircle, BarChart2, Zap, Flag, Edit2, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -15,14 +10,14 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
+
+
 import { Progress } from '@/components/ui/progress'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
+
+
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Cell } from 'recharts'
 
@@ -141,10 +136,10 @@ const mockCalibration = {
 
 export function PredictionsPage() {
   const [activeTab, setActiveTab] = React.useState<string>('all')
-  const [filterStatus, setFilterStatus] = React.useState<string>('all')
+  const [filterStatus] = React.useState<string>('all')
   const [isCreateOpen, setIsCreateOpen] = React.useState(false)
   const [selectedPrediction, setSelectedPrediction] = React.useState<typeof mockPredictions[0] | null>(null)
-  const [isEditOpen, setIsEditOpen] = React.useState(false)
+  const [, setIsEditOpen] = React.useState(false)
   const [formData, setFormData] = React.useState({
     statement: '',
     reasoning: '',

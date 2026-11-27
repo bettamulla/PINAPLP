@@ -2,28 +2,22 @@
 
 import * as React from 'react'
 import { formatDate, formatRelative } from '@/lib/utils'
-import {
-  Brain, BookOpen, RotateCcw, TrendingUp, Target,
-  ArrowLeft, ArrowRight, Check, X, Minus, Plus,
-  Sparkles, Clock, Calendar, BarChart2, RefreshCw,
-  Filter, Settings, Zap, Archive, Eye, EyeOff,
-  ChevronDown, ChevronUp, LayoutGrid, List
-} from 'lucide-react'
+import { Brain, BookOpen, RotateCcw, TrendingUp, Target, Check, Sparkles, Clock, BarChart2, RefreshCw, Zap, Eye, LayoutGrid, List } from 'lucide-react';
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
+
+
 import { Progress } from '@/components/ui/progress'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel } from '@/components/ui/dropdown-menu'
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
-import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+
+
+
+
 import { Label } from '@/components/ui/label'
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip } from 'recharts'
 
@@ -247,7 +241,7 @@ function ReviewComplete({ stats, onReset }: { stats: typeof mockStats; onReset: 
         <Check className="h-10 w-10 sm:h-12 sm:w-12 text-green-500" />
       </div>
       <h2 className="text-xl sm:text-2xl font-bold mb-2">Review Complete!</h2>
-      <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6">You've reviewed all {stats.todayReviews} cards due today.</p>
+      <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6">You&apos;ve reviewed all {stats.todayReviews} cards due today.</p>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-md mx-auto mb-4 sm:mb-6">
         <div className="p-3 sm:p-4 bg-muted rounded-lg">
           <p className="text-xl sm:text-2xl font-bold">{stats.todayReviews}</p>
@@ -556,7 +550,7 @@ function KnowledgeStats({ stats, recentReviews }: { stats: typeof mockStats; rec
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {stats.categoryStats.map((cat, i) => (
+            {stats.categoryStats.map((cat) => (
               <div key={cat.category} className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="font-medium">{cat.category}</span>

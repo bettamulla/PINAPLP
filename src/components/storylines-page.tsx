@@ -1,14 +1,14 @@
 'use client'
 
 import * as React from 'react'
-import { formatDate, formatRelativeTime } from '@/lib/utils'
+import { formatRelativeTime } from '@/lib/utils';
 import { Search, Filter, Bell, BellOff, Plus, ChevronRight, Clock, BookOpen } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuCheckboxItem, DropdownMenuLabel } from '@/components/ui/dropdown-menu'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuCheckboxItem, DropdownMenuLabel } from '@/components/ui/dropdown-menu';
+
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 
@@ -467,7 +467,7 @@ function StorylineDetail({ storyline, onBack }: { storyline: typeof mockStorylin
         <TabsContent value="monitor">
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">
-              Set up alerts for key developments in this storyline. You'll receive notifications when new articles are added.
+              Set up alerts for key developments in this storyline. You&apos;ll receive notifications when new articles are added.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <label className="flex items-center gap-2 cursor-pointer">

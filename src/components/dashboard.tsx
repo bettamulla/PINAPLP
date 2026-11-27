@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from '@/components/ui/navigation-menu'
+
 import { Sidebar } from '@/components/sidebar'
 import { Header } from '@/components/header'
 import { BriefingSection } from '@/components/briefing-section'

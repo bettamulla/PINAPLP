@@ -1,26 +1,15 @@
 'use client'
 
 import * as React from 'react'
-import { formatRelativeTime } from '@/lib/utils'
-import {
-  Target,
-  GitBranch,
-  Brain,
-  TrendingUp,
-  AlertTriangle,
-  Clock,
-  Plus,
-  Check,
-  X,
-  ChevronRight,
-} from 'lucide-react'
+
+import { Target, GitBranch, Brain, TrendingUp, AlertTriangle, Clock, Plus, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
+
+
 import { Progress } from '@/components/ui/progress'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+
 
 export function SidePanel() {
   return (

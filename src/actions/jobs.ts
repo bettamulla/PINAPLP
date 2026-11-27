@@ -3,9 +3,7 @@
 
 // Daily briefing generation — runs every morning at 6:00 AM
 export async function dailyBriefingJob() {
-  // Trigger the briefing generation
-  const { generateDailyBriefing } = await import('./briefing')
-  return generateDailyBriefing()
+  return { success: false, message: 'Daily briefing generation is not implemented' }
 }
 
 // Storyline clustering — runs every 2 hours

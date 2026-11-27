@@ -1,26 +1,21 @@
 'use client'
 
 import * as React from 'react'
-import { formatDate, formatRelative } from '@/lib/utils'
-import {
-  Send, Bot, User, Plus, Trash2, Edit2, Copy,
-  Sparkles, Brain, BookOpen, Target, Zap, RefreshCw,
-  ChevronLeft, ChevronRight, X, Check, Loader2,
-  FileText, Flag, Lightbulb, Search, Settings, Menu
-} from 'lucide-react'
+import { formatRelative } from '@/lib/utils';
+import { Send, Bot, User, Plus, Copy, Sparkles, Brain, BookOpen, Target, Zap, ChevronLeft, ChevronRight, X, Loader2, FileText, Flag, Search, Settings, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
+
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel } from '@/components/ui/dropdown-menu'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { markdownToReact } from '@/lib/markdown'
 
@@ -330,7 +325,7 @@ export function AssistantPage() {
           ) : (
             <div className="max-w-3xl mx-auto space-y-6 w-full">
               {messages.map((msg, i) => (
-                <MessageBubble key={i} message={msg} index={i} />
+                <MessageBubble key={i} message={msg} />
               ))}
               {isLoading && <TypingIndicator />}
             </div>
@@ -441,7 +436,7 @@ function WelcomeScreen({ onQuickPrompt }: { onQuickPrompt: (prompt: string) => v
   )
 }
 
-function MessageBubble({ message, index }: { message: typeof mockMessages[0]; index: number }) {
+function MessageBubble({ message }: { message: typeof mockMessages[0] }) {
   const isUser = message.role === 'user'
   const isAssistant = message.role === 'assistant'
 

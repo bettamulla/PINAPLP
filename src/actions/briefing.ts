@@ -1,8 +1,18 @@
 import { getDb } from '@/db'
-import { briefings, briefingStories, articles, users, newsSources } from '@/db/schema'
-import { eq, and } from 'drizzle-orm'
-// Hardcoded owner — replace Clerk auth
+import { briefings, briefingStories, articles, users } from '@/db/schema'
+import { and, asc, desc, eq } from 'drizzle-orm'
+
+// Hardcoded owner — replace with authenticated owner session.
 const OWNER_USER_ID = 'owner-12345'
+
+async function getOwnerId(db: ReturnType<typeof getDb>) {
+  const user = await db.query.users.findFirst({
+    where: eq(users.clerkId, OWNER_USER_ID),
+    columns: { id: true },
+  })
+  if (!user) throw new Error('User not found')
+  return user.id
+}
 
 export async function createBriefing(data: {
   title: string
@@ -10,30 +20,17 @@ export async function createBriefing(data: {
   newsSourceId: string
   articleIds: string[]
 }) {
-  const db = getDb()!
-  const userId = OWNER_USER_ID
-  if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
-
-  const user = await db.query.users.findFirst({
-    where: eq(users.clerkId, userId),
-  })
-  if (!user) throw new Error('User not found')
-
-  const newsSource = await db.query.newsSources.findFirst({
-    where: eq(newsSources.id, data.newsSourceId),
-  })
-  if (!newsSource) throw new Error('News source not found')
-
-  // Create the briefing
+  const db = getDb()
+  const userId = await getOwnerId(db)
   const [briefing] = await db.insert(briefings).values({
     title: data.title,
-    description: data.description,
-    newsSourceId: data.newsSourceId,
-    userId: user.id,
+    summary: data.description,
+    date: new Date(),
+    userId,
   }).returning()
 
-  // Insert the associated articles
-  for (const articleId of data.articleIds) {
+  for (let rank = 0; rank < data.articleIds.length; rank += 1) {
+    const articleId = data.articleIds[rank]
     const article = await db.query.articles.findFirst({
       where: eq(articles.id, articleId),
     })
@@ -41,7 +38,7 @@ export async function createBriefing(data: {
       await db.insert(briefingStories).values({
         briefingId: briefing.id,
         articleId,
-        orderIndex: data.articleIds.indexOf(articleId),
+        rank,
         whatHappened: article.content || '',
         whyItMatters: article.summary || '',
         whatHappensNext: article.content || '',
@@ -58,17 +55,19 @@ export async function updateBriefingStories(briefingId: string, articleUpdates: 
   whyItMatters: string
   whatHappensNext: string
 }[]) {
-  const db = getDb()!
-  const userId = OWNER_USER_ID
-  if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
-
-  // Verify ownership by checking the news source
+  const db = getDb()
+  const userId = await getOwnerId(db)
   const briefing = await db.query.briefings.findFirst({
-    where: eq(briefings.id, briefingId),
-    with: { newsSource: true },
+    where: and(eq(briefings.id, briefingId), eq(briefings.userId, userId)),
+    columns: { id: true },
   })
   if (!briefing) throw new Error('Briefing not found')
-  if (briefing.newsSource.userId !== userId) throw new Error('Forbidden')
+
+  const existingStories = await db.query.briefingStories.findMany({
+    where: eq(briefingStories.briefingId, briefingId),
+    columns: { rank: true },
+  })
+  let nextRank = existingStories.reduce((max, story) => Math.max(max, story.rank), -1) + 1
 
   for (const update of articleUpdates) {
     const story = await db.query.briefingStories.findFirst({
@@ -87,6 +86,7 @@ export async function updateBriefingStories(briefingId: string, articleUpdates: 
       await db.insert(briefingStories).values({
         briefingId,
         articleId: update.articleId,
+        rank: nextRank++,
         whatHappened: update.whatHappened,
         whyItMatters: update.whyItMatters,
         whatHappensNext: update.whatHappensNext,
@@ -98,16 +98,13 @@ export async function updateBriefingStories(briefingId: string, articleUpdates: 
 }
 
 export async function deleteBriefingStory(briefingId: string, articleId: string) {
-  const db = getDb()!
-  const userId = OWNER_USER_ID
-  if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
-
+  const db = getDb()
+  const userId = await getOwnerId(db)
   const briefing = await db.query.briefings.findFirst({
-    where: eq(briefings.id, briefingId),
-    with: { newsSource: true },
+    where: and(eq(briefings.id, briefingId), eq(briefings.userId, userId)),
+    columns: { id: true },
   })
   if (!briefing) throw new Error('Briefing not found')
-  if (briefing.newsSource.userId !== userId) throw new Error('Forbidden')
 
   await db.delete(briefingStories).where(and(
     eq(briefingStories.briefingId, briefingId),
@@ -118,17 +115,14 @@ export async function deleteBriefingStory(briefingId: string, articleId: string)
 }
 
 export async function getBriefing(briefingId: string) {
-  const db = getDb()!
-  const userId = OWNER_USER_ID
-  if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
-
+  const db = getDb()
+  const userId = await getOwnerId(db)
   const briefing = await db.query.briefings.findFirst({
-    where: eq(briefings.id, briefingId),
+    where: and(eq(briefings.id, briefingId), eq(briefings.userId, userId)),
     with: {
-      newsSource: true,
       stories: {
         with: { article: true },
-        orderBy: (s, { asc }) => [asc(s.orderIndex)],
+        orderBy: (stories) => [asc(stories.rank)],
       },
     },
   })
@@ -138,33 +132,30 @@ export async function getBriefing(briefingId: string) {
 }
 
 export async function getUserBriefings() {
-  const db = getDb()!
-  const userId = OWNER_USER_ID
-  if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
-
+  const db = getDb()
+  const userId = await getOwnerId(db)
   const briefingsList = await db.query.briefings.findMany({
     where: eq(briefings.userId, userId),
-    with: {
-      newsSource: true,
-      _count: {
-        select: { stories: true },
-      },
-    },
-    orderBy: (b, { desc }) => [desc(b.createdAt)],
+    with: { stories: true },
+    orderBy: [desc(briefings.createdAt)],
   })
 
   return { briefings: briefingsList }
 }
 
 export async function getBriefingStories(briefingId: string) {
-  const db = getDb()!
-  const userId = OWNER_USER_ID
-  if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
+  const db = getDb()
+  const userId = await getOwnerId(db)
+  const briefing = await db.query.briefings.findFirst({
+    where: and(eq(briefings.id, briefingId), eq(briefings.userId, userId)),
+    columns: { id: true },
+  })
+  if (!briefing) throw new Error('Briefing not found')
 
   const stories = await db.query.briefingStories.findMany({
     where: eq(briefingStories.briefingId, briefingId),
     with: { article: true },
-    orderBy: (s, { asc }) => [asc(s.orderIndex)],
+    orderBy: (story) => [asc(story.rank)],
   })
 
   return { stories }

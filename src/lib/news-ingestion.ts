@@ -151,7 +151,7 @@ function parseRSSFeed(xml: string): NewsArticle[] {
       const itemXml = match[1]
 
       const getTag = (tag: string) => {
-        const regex = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\/${tag}>`, 'i')
+        const regex = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, 'i')
         const result = regex.exec(itemXml)
         return result ? result[1].replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1').trim() : null
       }
