@@ -1,15 +1,13 @@
-'use server'
-
-import { db } from '@/db'
-import { flashcards, reviewHistory, users, articles, storylines, briefingStories } from '@/db/schema'
-import { eq, and, desc, asc, lte, count, sql } from 'drizzle-orm'
-import { auth } from '@clerk/nextjs/server'
+import { getDb } from '@/db'
+import { flashcards, reviewHistory, users, articles, briefingStories } from '@/db/schema'
+import { eq, and, lte } from 'drizzle-orm'
 import { generateFlashcards } from '@/lib/ai'
 import { reviewCard, getCardState, createNewCard } from '@/lib/spaced-repetition'
 
 export async function generateFlashcardsFromArticle(articleId: string) {
-  const { userId } = await auth()
-  if (!userId) throw new Error('Unauthorized')
+  const db = getDb()
+  const userId = OWNER_USER_ID
+  if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
 
   const user = await db.query.users.findFirst({
     where: eq(users.clerkId, userId),
@@ -61,8 +59,9 @@ export async function generateFlashcardsFromArticle(articleId: string) {
 }
 
 export async function getDueCards(limit = 50) {
-  const { userId } = await auth()
-  if (!userId) throw new Error('Unauthorized')
+  const db = getDb()
+  const userId = OWNER_USER_ID
+  if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
 
   const user = await db.query.users.findFirst({
     where: eq(users.clerkId, userId),
@@ -89,8 +88,9 @@ export async function reviewFlashcard(
   rating: 1 | 2 | 3 | 4,
   reviewDurationMs?: number
 ) {
-  const { userId } = await auth()
-  if (!userId) throw new Error('Unauthorized')
+  const db = getDb()
+  const userId = OWNER_USER_ID
+  if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
 
   const user = await db.query.users.findFirst({
     where: eq(users.clerkId, userId),
@@ -105,109 +105,94 @@ export async function reviewFlashcard(
 
   const cardState = getCardState({
     stability: Number(card.stability),
-    difficulty: Number(card.difficulty),
-    dueDate: card.dueDate,
-    lastReviewedAt: card.lastReviewedAt,
-    reviewCount: card.reviewCount ?? 0,
-    lapseCount: card.lapseCount ?? 0,
+    retrievability: Number(card.retrievability),
   })
 
-  const { card: newCardState, log } = reviewCard(cardState, rating)
+  const newState = reviewCard(cardState, rating, reviewDurationMs)
 
   await db.update(flashcards).set({
-    dueDate: newCardState.due,
-    stability: newCardState.stability.toString(),
-    difficulty: newCardState.difficulty.toString(),
-    retrievability: getOptimalRetention(newCardState).toString(),
-    lastReviewedAt: newCardState.lastReview,
-    reviewCount: newCardState.reps,
-    lapseCount: newCardState.lapses,
-    updatedAt: new Date(),
+    stability: newState.stability.toString(),
+    retrievability: newState.retrievability.toString(),
+    lastReviewedAt: new Date(),
+    difficulty: newState.difficulty.toString(),
   }).where(eq(flashcards.id, flashcardId))
 
   await db.insert(reviewHistory).values({
-    userId: user.id,
     flashcardId,
-    difficulty: rating === 1 ? 'again' : rating === 2 ? 'hard' : rating === 3 ? 'good' : 'easy',
-    previousStability: cardState.stability.toString(),
-    newStability: newCardState.stability.toString(),
-    previousDifficulty: cardState.difficulty.toString(),
-    newDifficulty: newCardState.difficulty.toString(),
-    reviewDurationMs,
+    userId,
+    rating,
     reviewedAt: new Date(),
+    durationMs: reviewDurationMs,
   })
 
-  return { card: newCardState, log, nextDue: newCardState.due }
+  return { success: true, ...newState }
 }
 
-export async function getFlashcardStats() {
-  const { userId } = await auth()
-  if (!userId) throw new Error('Unauthorized')
-
-  const user = await db.query.users.findFirst({
-    where: eq(users.clerkId, userId),
-  })
-  if (!user) throw new Error('User not found')
-
+export async function getReviewStats(userId: string, days = 30) {
+  const db = getDb()
   const now = new Date()
-  const today = new Date(now)
-  today.setHours(0, 0, 0, 0)
-  const tomorrow = new Date(today)
-  tomorrow.setDate(tomorrow.getDate() + 1)
+  const since = new Date(now.getTime() - days * 24 * 60 * 60 * 1000)
 
-  const allCards = await db.query.flashcards.findMany({
-    where: and(eq(flashcards.userId, user.id), eq(flashcards.isArchived, false)),
+  const total = await db.query.flashcards.count({
+    where: eq(flashcards.userId, userId),
   })
-
-  const dueToday = allCards.filter(c => c.dueDate <= now).length
-  const dueTomorrow = allCards.filter(c => c.dueDate > now && c.dueDate < tomorrow).length
-  const overdue = allCards.filter(c => c.dueDate < today).length
 
   const reviews = await db.query.reviewHistory.findMany({
-    where: and(eq(reviewHistory.userId, user.id)),
+    where: and(
+      eq(reviewHistory.userId, userId),
+      gte(reviewHistory.reviewedAt, since)
+    ),
     orderBy: (r, { desc }) => [desc(r.reviewedAt)],
-    limit: 1000,
   })
 
-  const totalReviews = reviews.length
-  const todayReviews = reviews.filter(r => r.reviewedAt >= today).length
+  const completed = reviews.filter(r => r.rating >= 3).length
+  const failed = reviews.filter(r => r.rating < 3).length
 
-  const correctReviews = reviews.filter(r => r.difficulty === 'good' || r.difficulty === 'easy').length
-  const retentionRate = totalReviews > 0 ? Math.round((correctReviews / totalReviews) * 100) : 0
+  let avgDifficulty = 0
+  let avgStability = 0
+  let avgRetrievability = 0
 
-  const upcomingReviews = []
-  for (let i = 1; i <= 14; i++) {
-    const dayStart = new Date(today)
-    dayStart.setDate(dayStart.getDate() + i)
-    const dayEnd = new Date(dayStart)
-    dayEnd.setDate(dayEnd.getDate() + 1)
-    const count = allCards.filter(c => c.dueDate >= dayStart && c.dueDate < dayEnd).length
-    upcomingReviews.push({ date: dayStart.toISOString().split('T')[0], count })
+  if (reviews.length > 0) {
+    avgDifficulty = reviews.reduce((sum, r) => {
+      const card = await db.query.flashcards.findFirst({
+        where: eq(flashcards.id, r.flashcardId),
+      })
+      if (card) return sum + Number(card.difficulty)
+      return sum
+    }, 0) / reviews.length
+
+    avgStability = reviews.reduce((sum, r) => {
+      const card = await db.query.flashcards.findFirst({
+        where: eq(flashcards.id, r.flashcardId),
+      })
+      if (card) return sum + Number(card.stability)
+      return sum
+    }, 0) / reviews.length
+
+    avgRetrievability = reviews.reduce((sum, r) => {
+      const card = await db.query.flashcards.findFirst({
+        where: eq(flashcards.id, r.flashcardId),
+      })
+      if (card) return sum + Number(card.retrievability)
+      return sum
+    }, 0) / reviews.length
   }
 
-  const categories = Array.from(new Set(allCards.map(c => c.category).filter(Boolean)))
-  const categoryStats = categories.map(cat => ({
-    category: cat,
-    count: allCards.filter(c => c.category === cat).length,
-    due: allCards.filter(c => c.category === cat && c.dueDate <= now).length,
-  }))
-
   return {
-    totalCards: allCards.length,
-    dueToday,
-    dueTomorrow,
-    overdue,
-    totalReviews,
-    todayReviews,
-    retentionRate,
-    upcomingReviews,
-    categoryStats,
+    total,
+    completed,
+    failed,
+    avgDifficulty: Math.round(avgDifficulty * 100) / 100,
+    avgStability: Math.round(avgStability * 100) / 100,
+    avgRetrievability: Math.round(avgRetrievability * 100) / 100,
+    reviews: reviews.length,
   }
 }
 
 export async function getRecentReviews(limit = 20) {
-  const { userId } = await auth()
-  if (!userId) throw new Error('Unauthorized')
+  const db = getDb()
+  const userId = OWNER_USER_ID
+  if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
 
   const user = await db.query.users.findFirst({
     where: eq(users.clerkId, userId),

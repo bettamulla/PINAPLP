@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "verify": "tsc --noEmit && lint && vitest run && DATABASE_URL= next build || exit $?",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "db:generate": "drizzle-kit generate",
@@ -71,6 +72,8 @@
     "drizzle-kit": "^0.24.2",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.11",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^4.5.0",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.11",
     "typescript": "^5.6.2"

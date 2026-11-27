@@ -1,10 +1,9 @@
-'use server'
-
-import { db } from '@/db'
+import { getDb } from '@/db'
 import { predictions, predictionRevisions, users, storylines, articles } from '@/db/schema'
-import { eq, and, desc, count, sql } from 'drizzle-orm'
-import { auth } from '@clerk/nextjs/server'
+import { eq, and, sql } from 'drizzle-orm'
 import { analyzePrediction } from '@/lib/ai'
+// Hardcoded owner — replace Clerk auth
+const OWNER_USER_ID = 'owner-12345'
 
 export async function createPrediction(data: {
   statement: string
@@ -16,15 +15,16 @@ export async function createPrediction(data: {
   storylineId?: string
   articleId?: string
 }) {
-  const { userId } = await auth()
-  if (!userId) throw new Error('Unauthorized')
+  const db = getDb()
+  const userId = OWNER_USER_ID
+  if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
 
   const user = await db.query.users.findFirst({
     where: eq(users.clerkId, userId),
   })
   if (!user) throw new Error('User not found')
 
-  let contextArticles: string[] = []
+  const contextArticles: string[] = []
   if (data.articleId) {
     const article = await db.query.articles.findFirst({
       where: eq(articles.id, data.articleId),
@@ -71,8 +71,9 @@ export async function createPrediction(data: {
 }
 
 export async function updatePredictionConfidence(predictionId: string, confidence: number, reasoning: string) {
-  const { userId } = await auth()
-  if (!userId) throw new Error('Unauthorized')
+  const db = getDb()
+  const userId = OWNER_USER_ID
+  if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
 
   const prediction = await db.query.predictions.findFirst({
     where: eq(predictions.id, predictionId),
@@ -95,8 +96,9 @@ export async function updatePredictionConfidence(predictionId: string, confidenc
 }
 
 export async function resolvePrediction(predictionId: string, outcome: string, status: 'resolved_correct' | 'resolved_incorrect' | 'unresolvable') {
-  const { userId } = await auth()
-  if (!userId) throw new Error('Unauthorized')
+  const db = getDb()
+  const userId = OWNER_USER_ID
+  if (userId !== OWNER_USER_ID) throw new Error('Unauthorized')
 
   const prediction = await db.query.predictions.findFirst({
     where: eq(predictions.id, predictionId),
@@ -108,131 +110,4 @@ export async function resolvePrediction(predictionId: string, outcome: string, s
   if (status !== 'unresolvable') {
     const outcomeBinary = status === 'resolved_correct' ? 1 : 0
     const probability = prediction.confidence / 100
-    brierScore = Math.pow(probability - outcomeBinary, 2)
-  }
-
-  await db.update(predictions).set({
-    status,
-    outcome,
-    resolvedAt: new Date(),
-    resolvedBy: userId,
-    brierScore: brierScore?.toString() || null,
-    updatedAt: new Date(),
-  }).where(eq(predictions.id, predictionId))
-
-  return { success: true, brierScore }
-}
-
-export async function getUserPredictions(status?: string) {
-  const { userId } = await auth()
-  if (!userId) throw new Error('Unauthorized')
-
-  const user = await db.query.users.findFirst({
-    where: eq(users.clerkId, userId),
-  })
-  if (!user) throw new Error('User not found')
-
-  const whereConditions = [eq(predictions.userId, user.id)]
-  if (status) whereConditions.push(eq(predictions.status, status as any))
-
-  const userPredictions = await db.query.predictions.findMany({
-    where: and(...whereConditions),
-    orderBy: (p, { desc }) => [desc(p.createdAt)],
-    with: {
-      storyline: true,
-      article: true,
-      revisions: { orderBy: (r, { desc }) => [desc(r.createdAt)] },
-    },
-  })
-
-  return userPredictions
-}
-
-export async function getCalibrationStats() {
-  const { userId } = await auth()
-  if (!userId) throw new Error('Unauthorized')
-
-  const user = await db.query.users.findFirst({
-    where: eq(users.clerkId, userId),
-  })
-  if (!user) throw new Error('User not found')
-
-  const allPredictions = await db.query.predictions.findMany({
-    where: eq(predictions.userId, user.id),
-  })
-
-  const resolved = allPredictions.filter(p => p.status !== 'pending')
-  const correct = resolved.filter(p => p.status === 'resolved_correct')
-  const incorrect = resolved.filter(p => p.status === 'resolved_incorrect')
-
-  const byConfidence: Record<string, { total: number; correct: number }> = {}
-  const brackets = ['0-10', '10-30', '30-50', '50-70', '70-90', '90-100']
-
-  for (const bracket of brackets) {
-    byConfidence[bracket] = { total: 0, correct: 0 }
-  }
-
-  for (const pred of resolved) {
-    let bracket = ''
-    if (pred.confidence <= 10) bracket = '0-10'
-    else if (pred.confidence <= 30) bracket = '10-30'
-    else if (pred.confidence <= 50) bracket = '30-50'
-    else if (pred.confidence <= 70) bracket = '50-70'
-    else if (pred.confidence <= 90) bracket = '70-90'
-    else bracket = '90-100'
-
-    byConfidence[bracket].total++
-    if (pred.status === 'resolved_correct') byConfidence[bracket].correct++
-  }
-
-  const calibrationData = brackets.map(bracket => ({
-    bracket,
-    total: byConfidence[bracket].total,
-    correct: byConfidence[bracket].correct,
-    accuracy: byConfidence[bracket].total > 0
-      ? Math.round((byConfidence[bracket].correct / byConfidence[bracket].total) * 100)
-      : 0,
-  }))
-
-  const avgBrierScore = resolved
-    .filter(p => p.brierScore !== null)
-    .reduce((sum, p) => sum + Number(p.brierScore!), 0) / resolved.filter(p => p.brierScore !== null).length || 0
-
-  return {
-    total: allPredictions.length,
-    resolved: resolved.length,
-    correct: correct.length,
-    incorrect: incorrect.length,
-    pending: allPredictions.filter(p => p.status === 'pending').length,
-    unresolvable: allPredictions.filter(p => p.status === 'unresolvable').length,
-    accuracyRate: resolved.length > 0 ? Math.round((correct.length / resolved.length) * 100) : 0,
-    avgBrierScore: Math.round(avgBrierScore * 1000) / 1000,
-    calibrationData,
-    bySubject: {},
-  }
-}
-
-export async function getPredictionsNeedingReview() {
-  const { userId } = await auth()
-  if (!userId) throw new Error('Unauthorized')
-
-  const user = await db.query.users.findFirst({
-    where: eq(users.clerkId, userId),
-  })
-  if (!user) throw new Error('User not found')
-
-  const now = new Date()
-  const soon = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
-
-  const predictionsList = await db.query.predictions.findMany({
-    where: and(
-      eq(predictions.userId, user.id),
-      eq(predictions.status, 'pending'),
-      sql`${predictions.expectedResolutionDate} <= ${soon}`
-    ),
-    orderBy: (p, { asc }) => [asc(p.expectedResolutionDate)],
-    with: { storyline: true, article: true },
-  })
-
-  return predictionsList
-}
+    brierScore
